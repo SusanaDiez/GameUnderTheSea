@@ -14,6 +14,7 @@ namespace Game_UnderTheSea
         Texture2D background;
         Rectangle backgroundRectangle;
         Player dolphin;
+        Enemy shark;
 
         public Game1()
         {
@@ -34,6 +35,7 @@ namespace Game_UnderTheSea
         {
             // TODO: Add your initialization logic here
             dolphin = new Player();
+            shark = new Enemy();
 
             backgroundRectangle = new Rectangle(0, 0, 1200, 700);
 
@@ -48,6 +50,7 @@ namespace Game_UnderTheSea
 
             background = this.Content.Load<Texture2D>("Background");
             dolphin.LoadContent(this.Content);
+            shark.LoadContent(this.Content);
 
         }
 
@@ -73,10 +76,20 @@ namespace Game_UnderTheSea
                 dolphin.Shoot(this.Content, dolphin.Location);
 
             }
+            else if (myKeyboard.IsKeyDown(Keys.X))
+            {
+                shark.Shoot(this.Content, shark.Location);
+
+            }
 
             foreach (var item in dolphin.bubbles)
             {
                 item.MoveRight();
+            }
+
+            foreach (var item in shark.fangs)
+            {
+                item.MoveLeft();
             }
 
             base.Update(gameTime);
@@ -95,6 +108,13 @@ namespace Game_UnderTheSea
             dolphin.Draw(this._spriteBatch, Color.White);
 
             foreach (var item in dolphin.bubbles)
+            {
+                item.Draw(this._spriteBatch, Color.White);
+            }
+
+            shark.Draw(this._spriteBatch, Color.White);
+
+            foreach (var item in shark.fangs)
             {
                 item.Draw(this._spriteBatch, Color.White);
             }
