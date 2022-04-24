@@ -11,15 +11,19 @@ namespace Game_UnderTheSea
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        Texture2D background;
+        Rectangle backgroundRectangle;
         Player dolphin;
-
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _graphics.IsFullScreen = true;
+
+            _graphics.PreferredBackBufferWidth = 1200;
+            _graphics.PreferredBackBufferHeight = 700;
+            //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
 
@@ -31,6 +35,7 @@ namespace Game_UnderTheSea
             // TODO: Add your initialization logic here
             dolphin = new Player();
 
+            backgroundRectangle = new Rectangle(0, 0, 1200, 700);
 
             base.Initialize();
         }
@@ -41,6 +46,7 @@ namespace Game_UnderTheSea
 
             // TODO: use this.Content to load your game content here
 
+            background = this.Content.Load<Texture2D>("Background");
             dolphin.LoadContent(this.Content);
 
         }
@@ -78,11 +84,13 @@ namespace Game_UnderTheSea
 
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(new Color(red,green,blue));
+            //GraphicsDevice.Draw(new _spriteBatch("Background"));
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
+
+            _spriteBatch.Draw(background, backgroundRectangle, Color.White);
 
             dolphin.Draw(this._spriteBatch, Color.White);
 
