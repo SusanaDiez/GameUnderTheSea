@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,6 +16,10 @@ namespace Game_UnderTheSea
         Rectangle backgroundRectangle;
         Player dolphin;
         Enemy shark;
+
+        bool mySwitch = false;
+        Random myRandom;
+        const byte doIShoot = 5;
 
         public Game1()
         {
@@ -36,6 +41,7 @@ namespace Game_UnderTheSea
             // TODO: Add your initialization logic here
             dolphin = new Player();
             shark = new Enemy();
+            myRandom = new Random();
 
             backgroundRectangle = new Rectangle(0, 0, 1200, 700);
 
@@ -63,28 +69,46 @@ namespace Game_UnderTheSea
 
             // TODO: Add your update logic here
 
+
             if (myKeyboard.IsKeyDown(Keys.Up))
             {
-                dolphin.Move(false);
+                dolphin.Move(Direction.Up);
             }
             else if (myKeyboard.IsKeyDown(Keys.Down))
             {
-                dolphin.Move(true);
+                dolphin.Move(Direction.Down);
             }
             else if (myKeyboard.IsKeyDown(Keys.Space))
             {
                 dolphin.Shoot(this.Content, dolphin.Location);
-
             }
-            else if (myKeyboard.IsKeyDown(Keys.X))
-            {
-                shark.Shoot(this.Content, shark.Location);
-
-            }
+            
 
             foreach (var item in dolphin.bubbles)
             {
                 item.MoveRight();
+            }
+
+            if (mySwitch)
+            {
+                shark.Move(DirectionS.Up);
+            }
+            else
+            {
+                shark.Move(DirectionS.Down);
+            }
+            if (shark.Location.Y > (this.Window.ClientBounds.Height - shark.Size.Y))
+            {
+                mySwitch = true;
+            }
+            if (shark.Location.Y < 0)
+            {
+                mySwitch = false;
+            }
+
+            if (myRandom.Next(1,80) == doIShoot)
+            {
+                shark.Shoot(this.Content, shark.Location);
             }
 
             foreach (var item in shark.fangs)
@@ -123,6 +147,5 @@ namespace Game_UnderTheSea
 
             base.Draw(gameTime);
         }
-
     }
 }

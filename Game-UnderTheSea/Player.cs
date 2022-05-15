@@ -12,7 +12,7 @@ namespace Game_UnderTheSea
     class Player : Sprite
     {
         public List<Bubble> bubbles;
-        public Player() : base("Dolphin", new Point(0, 150), new Point(200, 200))
+        public Player() : base("Dolphin", new Point(0, 150), new Point(250, 250))
         {
             bubbles = new List<Bubble>();
         }
@@ -24,22 +24,27 @@ namespace Game_UnderTheSea
         }
 
         /// <summary>
-        /// Move the object horizontally
+        /// Move the object vertically
         /// </summary>
-        /// <param name="direction">Boolean, True will move the object to the right, False will move the object to the Left</param>
-        public void Move(bool direction)
+        /// <param name="direction"></param> Enum that defines the movement of the object up and down.
+        public void Move(Direction direction)
         {
-            if (direction)
+            switch (direction)
             {
-                this.Location = new Point(this.Location.X, this.Location.Y + 5);
-            }
-            else
-            {
-                this.Location = new Point(this.Location.X, this.Location.Y - 5);
+                case Direction.Up:
+                    this.Location = new Point(this.Location.X, this.Location.Y - 5);
+                    break;
+                case Direction.Down:
+                    this.Location = new Point(this.Location.X, this.Location.Y + 5);
+                    break;
+                default:
+                    break;
             }
         }
-
-
-
+    }
+    enum Direction
+    {
+        Up,
+        Down
     }
 }

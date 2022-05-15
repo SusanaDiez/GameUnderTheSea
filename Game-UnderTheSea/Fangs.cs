@@ -18,6 +18,7 @@ namespace Game_UnderTheSea
         public Fangs(ContentManager contentManager, Point location) : base("Canine", location, new Point(50))
         {
             this.LoadContent(contentManager);
+            this.Location = new Point(this.Location.X - 50, this.Location.Y + 80);
         }
 
         public void MoveLeft()

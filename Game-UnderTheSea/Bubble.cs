@@ -18,6 +18,7 @@ namespace Game_UnderTheSea
         public Bubble(ContentManager contentManager, Point location) : base("Bubble", location, new Point(50))
         {
             this.LoadContent(contentManager);
+            this.Location = new Point(this.Location.X + 230, this.Location.Y + 100);
         }
 
         public void MoveRight()
