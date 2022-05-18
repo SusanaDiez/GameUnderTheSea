@@ -27,20 +27,37 @@ namespace Game_UnderTheSea
         /// Move the object vertically
         /// </summary>
         /// <param name="direction"></param> Enum that defines the movement of the object up and down.
+
         public void Move(Direction direction)
         {
-            switch (direction)
+            var maxUpPosition = 0;
+            var maxDownPosition = 0;
+            var position = this.Location.Y;
+            if (direction == Direction.Up)
             {
-                case Direction.Up:
-                    this.Location = new Point(this.Location.X, this.Location.Y - 5);
-                    break;
-                case Direction.Down:
-                    this.Location = new Point(this.Location.X, this.Location.Y + 5);
-                    break;
-                default:
-                    break;
+                position = this.Location.Y > maxUpPosition ? this.Location.Y - 5 : maxUpPosition;
             }
+            else
+            {
+                position = this.Location.Y >= maxDownPosition ? this.Location.Y + 5 : maxDownPosition;
+            }
+            this.Location = new Point(this.Location.X, position);
         }
+
+        //public void Move(Direction direction)
+        //{
+        //    switch (direction)
+        //    {
+        //        case Direction.Up:
+        //            this.Location = new Point(this.Location.X, this.Location.Y - 5);
+        //            break;
+        //        case Direction.Down:
+        //            this.Location = new Point(this.Location.X, this.Location.Y + 5);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
     }
     enum Direction
     {

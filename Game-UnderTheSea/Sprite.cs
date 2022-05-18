@@ -20,7 +20,7 @@ namespace Game_UnderTheSea
 
         private Point location;
 
-        public Point Location
+        public Point Location 
         {
             get
             {
