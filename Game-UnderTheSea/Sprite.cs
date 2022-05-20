@@ -16,7 +16,7 @@ namespace Game_UnderTheSea
 
         protected Texture2D texture2D;
 
-        protected Rectangle rectangle;
+        public Rectangle rectangle;
 
         private Point location;
 
@@ -81,6 +81,11 @@ namespace Game_UnderTheSea
             this.size = size;
             this.rectangle = new Rectangle(this.Location, this.Size);
         }
+
+        //public virtual void Update(GameTime gametime, List<Sprite>sprites)
+        //{
+
+        //}
 
         /// <summary>
         /// This method must be called to load an external asset to the RAM Memory

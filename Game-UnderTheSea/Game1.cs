@@ -11,15 +11,21 @@ namespace Game_UnderTheSea
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private SpriteFont font;
 
         Texture2D background;
         Rectangle backgroundRectangle;
         Player dolphin;
         Enemy shark;
+        String lives;
+        String score;
 
         bool mySwitch = false;
         Random myRandom;
         const byte doIShoot = 5;
+
+        public KeyboardState currentKey;
+        public KeyboardState previousKey;
 
         public Game1()
         {
@@ -45,6 +51,10 @@ namespace Game_UnderTheSea
 
             backgroundRectangle = new Rectangle(0, 0, 1200, 700);
 
+            lives = "5";
+
+            score = "0";
+
             base.Initialize();
         }
 
@@ -57,6 +67,7 @@ namespace Game_UnderTheSea
             background = this.Content.Load<Texture2D>("Background");
             dolphin.LoadContent(this.Content);
             shark.LoadContent(this.Content);
+            font = Content.Load<SpriteFont>("File");
 
         }
 
@@ -69,21 +80,31 @@ namespace Game_UnderTheSea
 
             // TODO: Add your update logic here
 
+            try
+            {
+                if (myKeyboard.IsKeyDown(Keys.Up))
+                {
+                    dolphin.Move(Direction.Up);
+                }
+                else if (myKeyboard.IsKeyDown(Keys.Down))
+                {
+                    dolphin.Move(Direction.Down);
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+            }
 
-            if (myKeyboard.IsKeyDown(Keys.Up))
-            {
-                dolphin.Move(Direction.Up);
-            }
-            else if (myKeyboard.IsKeyDown(Keys.Down))
-            {
-                dolphin.Move(Direction.Down);
-            }
-            else if (myKeyboard.IsKeyDown(Keys.Space))
+            previousKey = currentKey;
+            currentKey = Keyboard.GetState();
+
+            if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
             {
                 dolphin.Shoot(this.Content, dolphin.Location);
             }
-            
-
+        
+             
             foreach (var item in dolphin.bubbles)
             {
                 item.MoveRight();
@@ -128,6 +149,10 @@ namespace Game_UnderTheSea
             _spriteBatch.Begin();
 
             _spriteBatch.Draw(background, backgroundRectangle, Color.White);
+
+            _spriteBatch.DrawString(font, "Lives " + lives, new Vector2 (50, 10), Color.Red);
+
+            _spriteBatch.DrawString(font, "Score " + score, new Vector2(400, 10), Color.Red);
 
             dolphin.Draw(this._spriteBatch, Color.White);
 

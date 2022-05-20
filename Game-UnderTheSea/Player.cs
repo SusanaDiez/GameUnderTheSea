@@ -12,6 +12,7 @@ namespace Game_UnderTheSea
     class Player : Sprite
     {
         public List<Bubble> bubbles;
+
         public Player() : base("Dolphin", new Point(0, 150), new Point(250, 250))
         {
             bubbles = new List<Bubble>();
@@ -31,37 +32,55 @@ namespace Game_UnderTheSea
         public void Move(Direction direction)
         {
             var maxUpPosition = 0;
-            var maxDownPosition = 0;
-            var position = this.Location.Y;
+            var maxDownPosition = 520;
+            int position;
+            var newPoint = false;
+
             if (direction == Direction.Up)
             {
-                position = this.Location.Y > maxUpPosition ? this.Location.Y - 5 : maxUpPosition;
+                if(Location.Y >= maxUpPosition)
+                {
+                    position = Location.Y - 5;
+                    newPoint = true;
+                }
+                else
+                {
+                    position = maxUpPosition;
+                }
             }
             else
             {
-                position = this.Location.Y >= maxDownPosition ? this.Location.Y + 5 : maxDownPosition;
+                if (Location.Y <= maxDownPosition)
+                {
+                    position = Location.Y + 5;
+                    newPoint = true;
+                }
+                else
+                {
+                    position = maxUpPosition;
+                }
             }
-            this.Location = new Point(this.Location.X, position);
+
+            if (newPoint)
+            {
+                Location = new Point(Location.X, position);
+            }
         }
 
-        //public void Move(Direction direction)
+        //public override void Update(int basePoints)
         //{
-        //    switch (direction)
+        //    if (bubbles.Rectangle.Intersects(this.Rectangle))
         //    {
-        //        case Direction.Up:
-        //            this.Location = new Point(this.Location.X, this.Location.Y - 5);
-        //            break;
-        //        case Direction.Down:
-        //            this.Location = new Point(this.Location.X, this.Location.Y + 5);
-        //            break;
-        //        default:
-        //            break;
+        //        return;
         //    }
+
+        //    Score += basePoints;
         //}
+    }
+
     }
     enum Direction
     {
         Up,
         Down
     }
-}
