@@ -23,7 +23,7 @@ namespace Game_UnderTheSea
 
         public void MoveRight()
         {
-            this.Location = new Point(this.Location.X + 3, this.Location.Y);
+            this.Location = new Point(this.Location.X + 10, this.Location.Y);
         }
     }
 }

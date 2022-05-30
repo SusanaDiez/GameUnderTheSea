@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game_UnderTheSea
 {
@@ -12,6 +15,9 @@ namespace Game_UnderTheSea
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SpriteFont font;
+        private Song music;
+        SoundEffect bubbleSound;
+        SoundEffect biteSound;
 
         Texture2D background;
         Rectangle backgroundRectangle;
@@ -68,6 +74,12 @@ namespace Game_UnderTheSea
             dolphin.LoadContent(this.Content);
             shark.LoadContent(this.Content);
             font = Content.Load<SpriteFont>("File");
+            music = Content.Load<Song>("Theme");
+            bubbleSound = Content.Load<SoundEffect>("BubbleSound");
+            biteSound = Content.Load<SoundEffect>("BiteSound");
+
+            MediaPlayer.Play(music);
+            MediaPlayer.IsRepeating = true;
 
         }
 
@@ -102,6 +114,7 @@ namespace Game_UnderTheSea
             if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
             {
                 dolphin.Shoot(this.Content, dolphin.Location);
+                bubbleSound.Play();
             }
         
              
@@ -130,6 +143,7 @@ namespace Game_UnderTheSea
             if (myRandom.Next(1,80) == doIShoot)
             {
                 shark.Shoot(this.Content, shark.Location);
+                biteSound.Play();
             }
 
             foreach (var item in shark.fangs)
@@ -150,9 +164,9 @@ namespace Game_UnderTheSea
 
             _spriteBatch.Draw(background, backgroundRectangle, Color.White);
 
-            _spriteBatch.DrawString(font, "Lives " + lives, new Vector2 (50, 10), Color.Red);
+            _spriteBatch.DrawString(font, "Lives " + lives, new Vector2 (50, 10), Color.Green);
 
-            _spriteBatch.DrawString(font, "Score " + score, new Vector2(400, 10), Color.Red);
+            _spriteBatch.DrawString(font, "Score " + score, new Vector2(400, 10), Color.White);
 
             dolphin.Draw(this._spriteBatch, Color.White);
 

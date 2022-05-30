@@ -21,7 +21,6 @@ namespace Game_UnderTheSea
         public void Shoot(ContentManager content, Point location)
         {
             bubbles.Add(new Bubble(content, location));
-
         }
 
         /// <summary>
@@ -67,15 +66,6 @@ namespace Game_UnderTheSea
             }
         }
 
-        //public override void Update(int basePoints)
-        //{
-        //    if (bubbles.Rectangle.Intersects(this.Rectangle))
-        //    {
-        //        return;
-        //    }
-
-        //    Score += basePoints;
-        //}
     }
 
     }

@@ -23,6 +23,11 @@ namespace Game_UnderTheSea
 
         }
 
+        public void Collision(ContentManager content, Point location)
+        {
+            fangs.Rectangle
+        }
+
         /// <summary>
         /// Move the object vertically
         /// </summary>

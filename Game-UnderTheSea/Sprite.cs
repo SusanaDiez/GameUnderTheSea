@@ -48,6 +48,14 @@ namespace Game_UnderTheSea
             }
         }
 
+        public Rectangle Rectangle
+        {
+            get
+            {
+                return Rectangle;
+            }
+        }
+
 
         /// <summary>
         /// OJO: If you call this overloaded constructor you wont be able to change it later
