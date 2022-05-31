@@ -23,11 +23,6 @@ namespace Game_UnderTheSea
 
         }
 
-        public void Collision(ContentManager content, Point location)
-        {
-            fangs.Rectangle
-        }
-
         /// <summary>
         /// Move the object vertically
         /// </summary>
@@ -44,6 +39,13 @@ namespace Game_UnderTheSea
                     break;
                 default:
                     break;
+            }
+        }
+        public Rectangle Rectangle
+        {
+            get
+            {
+                return Rectangle;
             }
         }
     }

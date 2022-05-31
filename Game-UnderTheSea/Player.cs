@@ -13,6 +13,14 @@ namespace Game_UnderTheSea
     {
         public List<Bubble> bubbles;
 
+        public Rectangle rectangle;
+
+        private Point location;
+
+        private string sourceImageName;
+
+        private Point size;
+
         public Player() : base("Dolphin", new Point(0, 150), new Point(250, 250))
         {
             bubbles = new List<Bubble>();
@@ -66,9 +74,17 @@ namespace Game_UnderTheSea
             }
         }
 
-    }
+        public Player(string sourceImageName, Point location, Point size)
+        {
+            this.sourceImageName = sourceImageName;
+            this.location = location;
+            this.size = size;
+            this.rectangle = new Rectangle(this.Location, this.Size);
+        }
 
     }
+
+}
     enum Direction
     {
         Up,

@@ -25,6 +25,7 @@ namespace Game_UnderTheSea
         Enemy shark;
         String lives;
         String score;
+        String sharkLives;
 
         bool mySwitch = false;
         Random myRandom;
@@ -60,6 +61,8 @@ namespace Game_UnderTheSea
             lives = "5";
 
             score = "0";
+
+            sharkLives = "10";
 
             base.Initialize();
         }
@@ -166,7 +169,9 @@ namespace Game_UnderTheSea
 
             _spriteBatch.DrawString(font, "Lives " + lives, new Vector2 (50, 10), Color.Green);
 
-            _spriteBatch.DrawString(font, "Score " + score, new Vector2(400, 10), Color.White);
+            _spriteBatch.DrawString(font, "Score " + score, new Vector2(550, 10), Color.White);
+
+            _spriteBatch.DrawString(font, "Lives " + sharkLives, new Vector2(1000, 10), Color.Red);
 
             dolphin.Draw(this._spriteBatch, Color.White);
 
