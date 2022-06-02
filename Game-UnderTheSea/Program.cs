@@ -7,7 +7,7 @@ namespace Game_UnderTheSea
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new Game1(5, 10, 0))
                 game.Run();
         }
     }

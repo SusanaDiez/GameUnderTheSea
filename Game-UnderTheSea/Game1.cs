@@ -1,41 +1,46 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Game_UnderTheSea.commons;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Game_UnderTheSea
 {
     public class Game1 : Game
     {
+        private int DolphinLives { get; set; }
+        private int SharkLives { get; set; }
+        private int Score { get; set; }
+        private int MaxScore { get; set; }
+        private Player Dolphin { get; set; }
+        private Enemy Shark { get; set; }
+        public KeyboardState CurrentKey { get; set; }
+        public KeyboardState PreviousKey { get; set; }
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SpriteFont font;
-        private Song music;
+        private Song Music;
         SoundEffect bubbleSound;
         SoundEffect biteSound;
 
         Texture2D background;
         Rectangle backgroundRectangle;
-        Player dolphin;
-        Enemy shark;
-        String lives;
-        String score;
-        String sharkLives;
 
         bool mySwitch = false;
         Random myRandom;
         const byte doIShoot = 5;
 
-        public KeyboardState currentKey;
-        public KeyboardState previousKey;
-
-        public Game1()
+        public Game1(int dolphinLives, int sharkLives, int score)
         {
+            DolphinLives = dolphinLives;
+            SharkLives = sharkLives;
+            Score = score;
+            MaxScore = MaxScore;
+
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -44,66 +49,67 @@ namespace Game_UnderTheSea
             _graphics.PreferredBackBufferHeight = 700;
             //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
-
-
-
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            dolphin = new Player();
-            shark = new Enemy();
+            Dolphin = new Player();
+            Shark = new Enemy();
             myRandom = new Random();
-
             backgroundRectangle = new Rectangle(0, 0, 1200, 700);
-
-            lives = "5";
-
-            score = "0";
-
-            sharkLives = "10";
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
-
             background = this.Content.Load<Texture2D>("Background");
-            dolphin.LoadContent(this.Content);
-            shark.LoadContent(this.Content);
+            Dolphin.LoadContent(this.Content);
+            Shark.LoadContent(this.Content);
             font = Content.Load<SpriteFont>("File");
-            music = Content.Load<Song>("Theme");
+            Music = Content.Load<Song>("Theme");
             bubbleSound = Content.Load<SoundEffect>("BubbleSound");
             biteSound = Content.Load<SoundEffect>("BiteSound");
-
-            MediaPlayer.Play(music);
+            MediaPlayer.Play(Music);
             MediaPlayer.IsRepeating = true;
-
         }
 
         protected override void Update(GameTime gameTime)
         {
+            ValidateGame();
+
+            Keyboards();
+
+            Collisions();
+
+            TouchShark();
+
+            TouchDolphin();
+
+            EnemyAttack();
+
+            base.Update(gameTime);
+        }
+
+        protected void ValidateGame()
+        {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+        }
 
-            KeyboardState myKeyboard = Keyboard.GetState();
-
-            // TODO: Add your update logic here
+        protected void Keyboards()
+        {
+            var myKeyboard = Keyboard.GetState();
 
             try
             {
                 if (myKeyboard.IsKeyDown(Keys.Up))
                 {
-                    dolphin.Move(Direction.Up);
+                    Dolphin.Move(DirectionEnum.Up);
                 }
                 else if (myKeyboard.IsKeyDown(Keys.Down))
                 {
-                    dolphin.Move(Direction.Down);
+                    Dolphin.Move(DirectionEnum.Down);
                 }
             }
             catch (Exception error)
@@ -111,55 +117,105 @@ namespace Game_UnderTheSea
                 Console.WriteLine(error.Message);
             }
 
-            previousKey = currentKey;
-            currentKey = Keyboard.GetState();
+            PreviousKey = CurrentKey;
+            CurrentKey = Keyboard.GetState();
 
-            if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
+            if (CurrentKey.IsKeyDown(Keys.Space) && PreviousKey.IsKeyUp(Keys.Space))
             {
-                dolphin.Shoot(this.Content, dolphin.Location);
+                Dolphin.Shoot(this.Content, Dolphin.Location);
+
                 bubbleSound.Play();
             }
-        
-             
-            foreach (var item in dolphin.bubbles)
+        }
+
+        protected void Collisions()
+        {
+            foreach (var bubble in Dolphin.bubbles)
+            {
+                var fang = Shark.fangs.FirstOrDefault(x => x.rectangle.Intersects(bubble.rectangle));
+
+                if (fang != null)
+                {
+                    Dolphin.bubbles.Remove(bubble);
+                    Shark.fangs.Remove(fang);
+                    Score++;
+                    break;
+                }
+            }
+
+            foreach (var item in Dolphin.bubbles)
             {
                 item.MoveRight();
             }
+        }
 
+        protected void TouchShark()
+        {
+            foreach (var bubble in Dolphin.bubbles)
+            {
+                if (Shark.rectangle.Intersects(bubble.rectangle))
+                {
+                    Dolphin.bubbles.Remove(bubble);
+                    SharkLives--;
+                    Score += 5;
+                    break;
+                }
+            }
+        }
+
+        protected void TouchDolphin()
+        {
+            foreach (var fang in Shark.fangs)
+            {
+                if (Dolphin.rectangle.Intersects(fang.rectangle))
+                {
+                    Shark.fangs.Remove(fang);
+                    DolphinLives--;
+
+                    if (DolphinLives <= 0)
+                    {
+                        //this.Exit();
+                        Shark.Remove(fang);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        protected void EnemyAttack()
+        {
             if (mySwitch)
             {
-                shark.Move(DirectionS.Up);
+                Shark.Move(DirectionEnum.Up);
             }
             else
             {
-                shark.Move(DirectionS.Down);
+                Shark.Move(DirectionEnum.Down);
             }
-            if (shark.Location.Y > (this.Window.ClientBounds.Height - shark.Size.Y))
+            if (Shark.Location.Y > (this.Window.ClientBounds.Height - Shark.Size.Y))
             {
                 mySwitch = true;
             }
-            if (shark.Location.Y < 0)
+            if (Shark.Location.Y < 0)
             {
                 mySwitch = false;
             }
 
-            if (myRandom.Next(1,80) == doIShoot)
+            if (myRandom.Next(1, 80) == doIShoot)
             {
-                shark.Shoot(this.Content, shark.Location);
+                Shark.Shoot(this.Content, Shark.Location);
                 biteSound.Play();
             }
 
-            foreach (var item in shark.fangs)
+            foreach (var item in Shark.fangs)
             {
                 item.MoveLeft();
             }
-
-            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Draw(new _spriteBatch("Background"));
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
@@ -167,24 +223,26 @@ namespace Game_UnderTheSea
 
             _spriteBatch.Draw(background, backgroundRectangle, Color.White);
 
-            _spriteBatch.DrawString(font, "Lives " + lives, new Vector2 (50, 10), Color.Green);
+            _spriteBatch.DrawString(font, "Lives " + DolphinLives, new Vector2(50, 10), Color.Green);
 
-            _spriteBatch.DrawString(font, "Score " + score, new Vector2(550, 10), Color.White);
+            _spriteBatch.DrawString(font, "Score " + Score, new Vector2(550, 10), Color.White);
 
-            _spriteBatch.DrawString(font, "Lives " + sharkLives, new Vector2(1000, 10), Color.Red);
+            _spriteBatch.DrawString(font, "Lives " + SharkLives, new Vector2(1000, 10), Color.Red);
 
-            dolphin.Draw(this._spriteBatch, Color.White);
+            _spriteBatch.DrawString(font, "Max Score " + MaxScore, new Vector2(900, 600), Color.White);
 
-            foreach (var item in dolphin.bubbles)
+            Dolphin.Draw(_spriteBatch, Color.White);
+
+            foreach (var item in Dolphin.bubbles)
             {
-                item.Draw(this._spriteBatch, Color.White);
+                item.Draw(_spriteBatch, Color.White);
             }
 
-            shark.Draw(this._spriteBatch, Color.White);
+            Shark.Draw(_spriteBatch, Color.White);
 
-            foreach (var item in shark.fangs)
+            foreach (var item in Shark.fangs)
             {
-                item.Draw(this._spriteBatch, Color.White);
+                item.Draw(_spriteBatch, Color.White);
             }
 
             _spriteBatch.End();
