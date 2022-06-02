@@ -25,6 +25,5 @@ namespace Game_UnderTheSea
         {
             this.Location = new Point(this.Location.X - 10, this.Location.Y);
         }
-
     }
 }

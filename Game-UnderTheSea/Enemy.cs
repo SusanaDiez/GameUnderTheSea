@@ -1,6 +1,7 @@
 ﻿using Game_UnderTheSea.commons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using System;
 using System.Collections.Generic;
 
 namespace Game_UnderTheSea
@@ -43,5 +44,11 @@ namespace Game_UnderTheSea
                     break;
             }
         }
+
+        internal void Remove(object fang)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

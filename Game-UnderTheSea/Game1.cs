@@ -28,7 +28,11 @@ namespace Game_UnderTheSea
         SoundEffect biteSound;
 
         Texture2D background;
+        Texture2D gameOver;
+        Texture2D youWin;
         Rectangle backgroundRectangle;
+        Rectangle gameOverRectangle;
+        Rectangle youWinRectangle;
 
         bool mySwitch = false;
         Random myRandom;
@@ -57,15 +61,19 @@ namespace Game_UnderTheSea
             Shark = new Enemy();
             myRandom = new Random();
             backgroundRectangle = new Rectangle(0, 0, 1200, 700);
+            gameOverRectangle = new Rectangle(0, 0, 1200, 700);
+            youWinRectangle = new Rectangle(0, 0, 1200, 700);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            background = this.Content.Load<Texture2D>("Background");
-            Dolphin.LoadContent(this.Content);
-            Shark.LoadContent(this.Content);
+            background = Content.Load<Texture2D>("Background");
+            gameOver = Content.Load<Texture2D>("GameOver");
+            youWin = Content.Load<Texture2D>("YouWin");
+            Dolphin.LoadContent(Content);
+            Shark.LoadContent(Content);
             font = Content.Load<SpriteFont>("File");
             Music = Content.Load<Song>("Theme");
             bubbleSound = Content.Load<SoundEffect>("BubbleSound");
@@ -172,12 +180,6 @@ namespace Game_UnderTheSea
                     Shark.fangs.Remove(fang);
                     DolphinLives--;
 
-                    if (DolphinLives <= 0)
-                    {
-                        //this.Exit();
-                        Shark.Remove(fang);
-                    }
-
                     break;
                 }
             }
@@ -245,9 +247,22 @@ namespace Game_UnderTheSea
                 item.Draw(_spriteBatch, Color.White);
             }
 
+            if (DolphinLives == 0)
+            {
+                _spriteBatch.Draw(gameOver, gameOverRectangle, Color.White);
+            }
+
+            if (SharkLives == 0)
+            {
+                _spriteBatch.Draw(youWin, gameOverRectangle, Color.White);
+                Shark.Remove();
+                Dolphin.Remove();
+            }
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
     }
 }

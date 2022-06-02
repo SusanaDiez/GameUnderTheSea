@@ -106,5 +106,10 @@ namespace Game_UnderTheSea
             this.rectangle.Location = this.Location;
             spriteBatch.Draw(this.texture2D, this.rectangle, color);
         }
+
+        public void Remove()
+        {
+
+        }
     }
 }
